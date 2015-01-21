@@ -2,8 +2,14 @@ function subj = TB_balanceTrainPats(S, subj)
 % modification of PM_balanceTrainPats - includes code to balance based on
 % two factors (specifically, designed for balancing number of trials based
 % on both the goal location AND the cues for the goal location)
-% Rev 1.1 - 1/20/2015 - fixed bug in TrainTestOneIter balancing
 
+% Rev 1.1 - 1/20/2015 - fixed bug in TrainTestOneIter balancing, added
+% option to hardcode max trial-count in the training set
+
+%flags
+setmax = 0;%if a non-zero value is specified, override number of cues below to have a training trial-count of 2x this value (e.g. 6 = 12 training trials per cond)
+
+%files and data
 cuefile = ['/mnt/wagner/thackery/Circmaze/subs_preprocessed_fermi_nospikerepair/' S.subj_id '/model_plan_allruns_includemarginals/cues_' S.subj_id '_allruns.mat']
 load(cuefile)
 sels = squeeze(get_group_as_matrix(subj, 'selector',S.thisSelector));%create matrix of bins/iterations*trials (1s = training, 2s = testing trials)
@@ -154,7 +160,12 @@ else
             end
             
             % cue balancing..........................
-            fewestcues = min(min(cellfun('size', idxbycue, 2)));%find the cue indices with the fewest instances
+            if setmax > 0
+                fewestcues = setmax;
+            else
+                fewestcues = min(min(cellfun('size', idxbycue, 2)));%find the cue indices with the fewest instances
+            end
+            
             for x = 1:length(idxInclude)
                 idxInclude2{x} = [idxbycue{1,x}(1:fewestcues) idxbycue{2,x}(1:fewestcues)];
             end
