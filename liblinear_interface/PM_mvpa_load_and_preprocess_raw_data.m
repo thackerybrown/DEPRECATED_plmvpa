@@ -27,9 +27,9 @@ if strcmp(S.patternType, 'betas')
     subj = init_object(subj,'selector','runs');
     subj = set_mat(subj,'selector','runs',runs);
     
-%         % zscore the data - not sure if useful for beta analysis
-         subj = zscore_runs(subj,'betas','runs');
-         subj = remove_mat(subj,'pattern','betas');
+   % zscore the data - not sure if useful for beta analysis
+   %      subj = zscore_runs(subj,'betas','runs');
+   %      subj = remove_mat(subj,'pattern','betas');
         
 
     
