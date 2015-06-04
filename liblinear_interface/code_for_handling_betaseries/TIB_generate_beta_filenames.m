@@ -40,11 +40,11 @@ betaidx{1,3} = strcmpi('cues3',names);
 betaidx{1,4} = strcmpi('cues4',names);
 betaidx{1,5} = strcmpi('cues5',names);
 
-%betaidx{1,6} = strcmpi('goal_1',names);
-%betaidx{1,7} = strcmpi('goal_2',names);
-%betaidx{1,8} = strcmpi('goal_3',names);
-%betaidx{1,9} = strcmpi('goal_4',names);
-%betaidx{1,10} = strcmpi('goal_5',names);
+% betaidx{1,1} = strcmpi('goal1',names);
+% betaidx{1,2} = strcmpi('goal2',names);
+% betaidx{1,3} = strcmpi('goal3',names);
+% betaidx{1,4} = strcmpi('goal4',names);
+% betaidx{1,5} = strcmpi('goal5',names);
 
 %% 10-way
 % betaidx{1,1} = strcmpi('cues1_1',names);
@@ -75,11 +75,11 @@ bnames{1,3} = 'cues3';
 bnames{1,4} = 'cues4';
 bnames{1,5} = 'cues5';
 
-%bnames{1,6} = 'goal_1';
-%bnames{1,7} = 'goal_2';
-%bnames{1,8} = 'goal_3';
-%bnames{1,9} = 'goal_4';
-%bnames{1,10} = 'goal_5';
+% bnames{1,1} = 'goal1';
+% bnames{1,2} = 'goal2';
+% bnames{1,3} = 'goal3';
+% bnames{1,4} = 'goal4';
+% bnames{1,5} = 'goal5';
 
 %% 10-way
 % bnames{1,1} = 'cues1_1';
@@ -136,33 +136,33 @@ betaidx_te{1,5} = strcmpi('cues5',names);
 %betaidx{1,10} = strcmpi('goal_5',names);
 
 %% 10-way
-betaidx_tr{1,1} = strcmpi('cues1_1',names);
-betaidx_te{1,1} = strcmpi('cues1_2',names);
-betaidx_tr{1,2} = strcmpi('cues2_1',names);
-betaidx_te{1,2} = strcmpi('cues2_2',names);
-betaidx_tr{1,3} = strcmpi('cues3_1',names);
-betaidx_te{1,3} = strcmpi('cues3_2',names);
-betaidx_tr{1,4} = strcmpi('cues4_1',names);
-betaidx_te{1,4} = strcmpi('cues4_2',names);
-betaidx_tr{1,5} = strcmpi('cues5_1',names);
-betaidx_te{1,5} = strcmpi('cues5_2',names);
+% betaidx_tr{1,1} = strcmpi('cues1_1',names);
+% betaidx_te{1,1} = strcmpi('cues1_2',names);
+% betaidx_tr{1,2} = strcmpi('cues2_1',names);
+% betaidx_te{1,2} = strcmpi('cues2_2',names);
+% betaidx_tr{1,3} = strcmpi('cues3_1',names);
+% betaidx_te{1,3} = strcmpi('cues3_2',names);
+% betaidx_tr{1,4} = strcmpi('cues4_1',names);
+% betaidx_te{1,4} = strcmpi('cues4_2',names);
+% betaidx_tr{1,5} = strcmpi('cues5_1',names);
+% betaidx_te{1,5} = strcmpi('cues5_2',names);
 
 %% binary
 % bnames{1,1} = 'cues1';
 % bnames{1,2} = 'cues3';
 
 %% 5-way
-% bnames_tr{1,1} = 'goal1';
-% bnames_tr{1,2} = 'goal2';
-% bnames_tr{1,3} = 'goal3';
-% bnames_tr{1,4} = 'goal4';
-% bnames_tr{1,5} = 'goal5';
-% 
-% bnames_te{1,1} = 'cues1';
-% bnames_te{1,2} = 'cues2';
-% bnames_te{1,3} = 'cues3';
-% bnames_te{1,4} = 'cues4';
-% bnames_te{1,5} = 'cues5';
+bnames_tr{1,1} = 'goal1';
+bnames_tr{1,2} = 'goal2';
+bnames_tr{1,3} = 'goal3';
+bnames_tr{1,4} = 'goal4';
+bnames_tr{1,5} = 'goal5';
+
+bnames_te{1,1} = 'cues1';
+bnames_te{1,2} = 'cues2';
+bnames_te{1,3} = 'cues3';
+bnames_te{1,4} = 'cues4';
+bnames_te{1,5} = 'cues5';
 
 %bnames{1,6} = 'goal_1';
 %bnames{1,7} = 'goal_2';
@@ -171,16 +171,16 @@ betaidx_te{1,5} = strcmpi('cues5_2',names);
 %bnames{1,10} = 'goal_5';
 
 %% 10-way
-bnames_tr{1,1} = 'cues1_1';
-bnames_te{1,1} = 'cues1_2';
-bnames_tr{1,2} = 'cues2_1';
-bnames_te{1,2} = 'cues2_2';
-bnames_tr{1,3} = 'cues3_1';
-bnames_te{1,3} = 'cues3_2';
-bnames_tr{1,4} = 'cues4_1';
-bnames_te{1,4} = 'cues4_2';
-bnames_tr{1,5} = 'cues5_1';
-bnames_te{1,5} = 'cues5_2';
+% bnames_tr{1,1} = 'cues1_1';
+% bnames_te{1,1} = 'cues1_2';
+% bnames_tr{1,2} = 'cues2_1';
+% bnames_te{1,2} = 'cues2_2';
+% bnames_tr{1,3} = 'cues3_1';
+% bnames_te{1,3} = 'cues3_2';
+% bnames_tr{1,4} = 'cues4_1';
+% bnames_te{1,4} = 'cues4_2';
+% bnames_tr{1,5} = 'cues5_1';
+% bnames_te{1,5} = 'cues5_2';
 
 allbetafilenames = dir(fullfile(S.mvpa_dir, 'beta*.img'));
 

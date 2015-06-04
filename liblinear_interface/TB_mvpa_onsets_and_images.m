@@ -79,6 +79,7 @@ onsets = cell(size(thisConds));
 for i = 1:length(thisConds)%e.g. 5, for {{one} {two} {three} {four} {five}}
     for j = 1:length(thisConds{i})
         idxThisCond = find(strcmp(thisOns.names, thisConds{i}{j}));
+        %betidxnum = find(strcmp(thisbetidx.bnames, thisConds{i}{j}));%finds idx in thisbetidx corresponding to current condition name, added 1/7/2015
         if ~isempty(idxThisCond)
             %enoughTRs{i} = logical(vertcat(enoughTRs{i}, enoughTRs_h));
             %            theseOnsets = asRow(thisOns.onsets{idxThisCond});%spits the
@@ -87,8 +88,8 @@ for i = 1:length(thisConds)%e.g. 5, for {{one} {two} {three} {four} {five}}
             if strcmp(S.patternType, 'betas') %we are going to convert the logical indexing for betas into "onsets" (i.e. image numbers)
                 
                 c = 1
-                for x = 1:numel(thisbetidx.betaidx{i})
-                    if thisbetidx.betaidx{i}(x) == 1
+                for x = 1:numel(thisbetidx.betaidx{i})%x = 1:numel(thisbetidx.betaidx{betidxnum})%
+                    if thisbetidx.betaidx{i}(x) == 1%if thisbetidx.betaidx{betidxnum}(x) == 1%
                         onsets{i}(c) = x
                         c = c + 1
                     end

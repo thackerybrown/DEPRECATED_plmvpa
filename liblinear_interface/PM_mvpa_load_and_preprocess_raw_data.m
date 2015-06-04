@@ -28,8 +28,8 @@ if strcmp(S.patternType, 'betas')
     subj = set_mat(subj,'selector','runs',runs);
     
 %         % zscore the data - not sure if useful for beta analysis
-%         subj = zscore_runs(subj,'betas','runs');
-%         subj = remove_mat(subj,'pattern','betas');
+         subj = zscore_runs(subj,'betas','runs');
+         subj = remove_mat(subj,'pattern','betas');
         
 
     
