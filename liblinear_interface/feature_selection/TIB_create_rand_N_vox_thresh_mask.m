@@ -82,10 +82,11 @@ for m=1:length(map_patnames)
   % Identify supranVox_threshold voxels
   % MASKVEC is going to be a boolean vector
   maskvec = zeros(size(pat));
-  
-  [sorted_pat sorting_inds] = sort(pat,'ascend');  % sort the pat, lowest p-values are first
-  maskvec(sorting_inds(1:nVox_thresh)) = 1;  % assign ones to the N lowest p-values, where N = nVox_thresh
-  display([' p-val cutoff for top ' num2str(nVox_thresh) ' voxels = ' num2str(sorted_pat(nVox_thresh))])
+  randvec = rand(size(pat));%create a list of random numbers, size of pattern
+  [sorted_pat sorting_inds] = sort(randvec,'ascend');  % sort the pat, lowest rand values are first
+  %[sorted_pat sorting_inds] = sort(pat,'ascend');  % sort the pat, lowest p-values are first
+  maskvec(sorting_inds(1:nVox_thresh)) = 1;  % assign ones to the N lowest rand values, where N = nVox_thresh
+  display([' random value cutoff for top ' num2str(nVox_thresh) ' voxels = ' num2str(sorted_pat(nVox_thresh))])
   
    
   

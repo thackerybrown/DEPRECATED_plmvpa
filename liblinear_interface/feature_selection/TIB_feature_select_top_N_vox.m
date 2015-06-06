@@ -1,6 +1,6 @@
 function [subj] = TIB_feature_select_top_N_vox(subj,data_patin,regsname,selsgroup,varargin)
 % Originally 'feature_select' from the princeton mvpa toolbox
-% modified by JR and then by AG.
+% modified by JR and then by AG, then by TIB to introduce flexibly switching between metrics of "desired" features.
 %
 % No-peeking feature selection
 %
@@ -79,6 +79,7 @@ function [subj] = TIB_feature_select_top_N_vox(subj,data_patin,regsname,selsgrou
 defaults.new_map_patname = sprintf('');
 defaults.new_maskstem = sprintf('%s_thresh',data_patin);
 defaults.nVox_thresh = 1000;
+defaults.fseltype = 'topn';
 defaults.statmap_funct = 'statmap_anova';
 defaults.statmap_arg = struct([]);
 defaults.writeInclusionMaps = [];
@@ -142,7 +143,11 @@ for n=1:nIterations
     if ~isempty(args.nVox_thresh)
         % Now, create a new thresholded binary mask from the p-values
         % statmap pattern returned by the anova
-        subj = JR_create_top_N_vox_thresh_mask(subj,cur_map_patname,cur_maskname,args.nVox_thresh);
+        if strcmp(args.fseltype, 'topn')
+            subj = JR_create_top_N_vox_thresh_mask(subj,cur_map_patname,cur_maskname,args.nVox_thresh);
+        elseif strcmp(args.fseltype, 'rand')
+            subj = TIB_create_rand_N_vox_thresh_mask(subj,cur_map_patname,cur_maskname,args.nVox_thresh);
+        end
         subj = set_objfield(subj,'mask',cur_maskname,'group_name',args.new_maskstem);
     end
 end % i nIterations
