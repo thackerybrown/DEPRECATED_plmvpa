@@ -28,7 +28,7 @@ par.scansSelect.goals.loc = 1:1;%***if ALL FILENAMES corresponding to ALL RUNS O
 par.scansSelect.plan.loc = 1:1;%***if ALL FILENAMES corresponding to ALL RUNS OF INTEREST are stored in ONE cell of raw_filenames.mat (i.e., not broken up by run), set index to 1 or 1:1. Otherwise, create indexing for elements of cell array raw_filenames.mat corresponding to task of interest (i.e. if cells runs 1:4 correspond to task 1, we want to reference {1}, {2}... in raw_filenames.mat)
 
 %input image info
-S.inputformat = 'betas' %either 'raw' for raw bold images or 'betas' for beta images. Selection here automatically changes some params below.
+S.inputformat = 'betas'%'betas' %either 'raw' for raw bold images or 'betas' for beta images. Selection here automatically changes some params below.
 if strcmp(S.inputformat, 'raw')
     data_imgs_to_use = 'raw_filenames.mat'; % .mat file containing names of all functional images (must exist for each subject; can be created by running raw_filenames = cellstr(SPM.xY.P) on subject's SPM.mat file)
 elseif strcmp(S.inputformat, 'betas')
@@ -39,36 +39,43 @@ end
 %set the same if you want to train and test on the same set of trials via
 %cross-validation (see section below)
 S.trainTask = 'goals';%%%%%%%%%'goals' is just a placeholder for now. Eventually, change to 'goals' vs 'plan' so we can be more flexible in analysis.
-S.testTask = 'plan';%'goals';
+S.testTask = 'goals';%'plan';%
 %x-validation info
-S.xvaltype = 'nf'; %set to 'loo' for leave-one-out x-validation or 'nf' for nfold using the S.nFolds defined below
+S.xvaltype = 'loo'; %set to 'loo' for leave-one-out x-validation or 'nf' for nfold using the S.nFolds defined below
 
 %%model information
 if strcmp(S.inputformat, 'raw')
     S.onsets_filename = ['onsets_' S.subj_id '_allruns']
     S.onsets_filename_tr = ['onsets_' S.subj_id '_allruns']%S.onsets_filename %added for train on 1, test on another - this assumes the data are actually in the same set of files.
-    S.onsets_filename_tst = ['onsets_' S.subj_id '_allruns_test']%S.onsets_filename %added for train on 1, test on another - this assumes the data are actually in the same set of files.
+    S.onsets_filename_tst = ['onsets_' S.subj_id '_allruns']%['onsets_' S.subj_id '_allruns_test']%S.onsets_filename %added for train on 1, test on another - this assumes the data are actually in the same set of files.
 elseif strcmp(S.inputformat, 'betas')
-    S.onsets_filename = ['cuebycue_onsets_' S.subj_id]%['onsets_' S.subj_id '_allruns_cuengoal_rearranged']%['cuebycue_onsets_' S.subj_id]%
-    S.onsets_filename_tr = ['cuebycue_onsets_' S.subj_id]%['onsets_' S.subj_id '_allruns_cuengoal_rearranged']%['onsets_' S.subj_id '_allruns']%S.onsets_filename %added for train on 1, test on another - this assumes the data are actually in the same set of files.
-    S.onsets_filename_tst = ['cuebycue_onsets_' S.subj_id]%['onsets_' S.subj_id '_allruns_cuengoal_rearranged']%['onsets_' S.subj_id '_allruns_test']%S.onsets_filename %added for train on 1, test on another - this assumes the data are actually in the same set of files.
+    S.onsets_filename = ['onsets_' S.subj_id '_allruns_cuenew_rearranged'];%_wnoplan_d2']%['cuebycue_onsets_' S.subj_id]%
+    
+    %S.onsets_filename = ['onsets_' S.subj_id '_allruns_cuengoal_rearranged_goald7_wnogoalhold'];%_wnoplan_d2']%['cuebycue_onsets_' S.subj_id]%
+    S.onsets_filename_tr = ['onsets_' S.subj_id '_allruns_cuengoal_rearranged_goald7_wnogoalhold']%['onsets_' S.subj_id '_allruns_cuengoal_rearranged']%['onsets_' S.subj_id '_allruns']%S.onsets_filename %added for train on 1, test on another - this assumes the data are actually in the same set of files.
+    S.onsets_filename_tst = ['onsets_' S.subj_id '_allruns_cuengoal_rearranged_goald7_wnogoalhold']%['onsets_' S.subj_id '_allruns_cuengoal_rearranged']%['onsets_' S.subj_id '_allruns_test']%S.onsets_filename %added for train on 1, test on another - this assumes the data are actually in the same set of files.
 
     S.betaidx_filename = [S.subj_id '_betas_idx']
     S.betaidx_filename_tr = [S.subj_id '_betas_idx_tr']
     S.betaidx_filename_te = [S.subj_id '_betas_idx_te']
+    %S.onsets_filename = ['onsets_' S.subj_id '_allruns_cuenew_rearranged'];%_wnoplan_d2']%['cuebycue_onsets_' S.subj_id]%
     
 end
 
 %% directories~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-S.expt_dir = ['/mnt/wagner/thackery/' S.exp_name '/subs_preprocessed_fermi_nospikerepair/'];
-%S.expt_dir = ['/mnt/wagner/thackery/' S.exp_name '/'];
+%S.expt_dir = ['/mnt/wagner/thackery/' S.exp_name '/subs_preprocessed_fermi_nospikerepair/'];
+S.expt_dir = ['/Volumes/group/awagner/wagner/thackery/' S.exp_name '/subs_preprocessed_fermi_nospikerepair/'];
 
 %model directory (onsets and betas in here)
 if strcmp(S.inputformat, 'raw')
     %S.mvpa_dir = [S.expt_dir S.subj_id '/model_v2/'];
     S.mvpa_dir = [S.expt_dir S.subj_id '/model_allruns_includemarginals/'];  
 elseif strcmp(S.inputformat, 'betas')
-    S.mvpa_dir = [S.expt_dir S.subj_id '/model_allruns_includemarginals/betaseries_cue_rearranged/'];%betaseries_cuengoal_rearranged_wplan/'];%bckup/'];
+    %S.mvpa_dir = [S.expt_dir S.subj_id '/model_allruns_includemarginals/betaseries_cuengoal_rearranged_goald7_nogoalhold/'];%/'];%bckup/'];
+    
+    S.mvpa_dir = [S.expt_dir S.subj_id '/model_allruns_includemarginals/betaseries_cue_rearranged/'];%bckup/'];
+    %S.mvpa_dir = [S.expt_dir S.subj_id '/model_allruns_includemarginals/betaseries_cue_rearranged/'];%bckup/'];
+    
 end
 
 S.anat_dir = [S.expt_dir S.subj_id '/Masks'];%masks in here
@@ -91,6 +98,7 @@ end
 
 %create raw_filenames on the fly (as opposed to making it by loading data
 %from an SPM.mat file
+if strcmp(S.inputformat, 'raw')
 runfolds = dir(fullfile(par.funcdir, 'run_*'));%dir(fullfile(par.funcdir, 'localizer*'));%
 for idxr = 1:length(runfolds)
     allrawfilenames{idxr,1} = dir(fullfile(par.funcdir, runfolds(idxr).name, '/urun*.nii'));%'/swa*.nii'));%
@@ -112,6 +120,9 @@ for idx = 1:length(raw_filenames)
 end
 a = sortrows(raw_filenames, 2);
 raw_filenames = a(:,1);
+else
+    raw_filenames = [];
+end
 
 if strcmp(S.inputformat, 'betas')
 load([S.mvpa_dir '/' data_imgs_to_use]); %loads predefined cell array
@@ -165,9 +176,11 @@ end
 if strcmp(S.trainTask,'goals')
     %parTr = PM_Params(subj_id, 'mnem');
     S.onsetsTrainDir = [S.mvpa_dir];%directory containing onsets.mat or betas_idx.mat file to be loaded in
+    
     %S.condsTrain = {{'goal1'}  {'goal2'} {'goal3'} {'goal4'} {'goal5'}} ;%corresponds to the names in the onsets.mat or betas_idx.mat files. This is used to select what is being compared with what.
-    %S.condsTrain = {{'cues1'}  {'cues2'} {'cues3'} {'cues4'} {'cues5'}} %{{'cues1_1'}  {'cues1_2'} {'cues2_1'} {'cues2_2'} {'cues3_1'} {'cues3_2'}  {'cues4_1'} {'cues4_2'} {'cues5_1'} {'cues5_2'}}%{{'cues1'}  {'cues2'} {'cues3'} {'cues4'} {'cues5'}} %{ {'plan1'} {'plan2'} {'plan3'} {'plan4'} {'plan5'}} ;%%corresponds to the names in the onsets.mat or betas_idx.mat files. This is used to select what is being compared with what.
-    S.condsTrain = {{'cues1_1'} {'cues2_1'} {'cues3_1'} {'cues4_1'} {'cues5_1'}}%
+    S.condsTrain = {{'cues1'}  {'cues2'} {'cues3'} {'cues4'} {'cues5'}} %{{'cues1_1'}  {'cues1_2'} {'cues2_1'} {'cues2_2'} {'cues3_1'} {'cues3_2'}  {'cues4_1'} {'cues4_2'} {'cues5_1'} {'cues5_2'}}%{{'cues1'}  {'cues2'} {'cues3'} {'cues4'} {'cues5'}} %{ {'plan1'} {'plan2'} {'plan3'} {'plan4'} {'plan5'}} ;%%corresponds to the names in the onsets.mat or betas_idx.mat files. This is used to select what is being compared with what.
+    %S.condsTrain = {{'cues1_1'} {'cues2_1'} {'cues3_1'} {'cues4_1'} {'cues5_1'}}%
+    
     %S.condsTrain = {{'objects'}  {'scenes'} } ;%corresponds to the names in the onsets.mat or betas_idx.mat files. This is used to select what is being compared with what.
 
     %S.condsTrain = {{'goal_1'}  {'goal_2'} {'goal_3'}} ;%corresponds to the names in the onsets.mat or betas_idx.mat files. This is used to select what is being compared with what.
@@ -203,6 +216,10 @@ if strcmp(S.testTask,'goals')
     S.onsetsTestDir =[S.mvpa_dir];%directory containing onsets.mat or betas_idx.mat file to be loaded in
     %S.condsTest = {{'goal_1_plan'}  {'goal_2_plan'} {'goal_3_plan'} {'goal_4_plan'} {'goal_5_plan'}};
     S.condsTest = {{'cues1'} {'cues2'} {'cues3'} {'cues4'} {'cues5'}} %{{'cues1_1'}  {'cues1_2'} {'cues2_1'} {'cues2_2'} {'cues3_1'} {'cues3_2'}  {'cues4_1'} {'cues4_2'} {'cues5_1'} {'cues5_2'}}%{ {'plan1'} {'plan2'} {'plan3'} {'plan4'} {'plan5'}}%%{'goalhold1'} {'goalhold2'} {'goalhold3'} {'goalhold4'} {'goalhold5'}};
+    %S.condsTrain = {{'cues1_1'} {'cues2_1'} {'cues3_1'} {'cues4_1'} {'cues5_1'}}%
+    
+    
+    %S.condsTest = {{'goal1'} {'goal2'} {'goal3'} {'goal4'} {'goal5'}};
     %S.condsTest = {{'objects'}  {'scenes'} } ;
     
     %S.condsTest = {{'goal_1'}  {'goal_2'}  {'goal_3'} };
@@ -222,8 +239,8 @@ elseif strcmp(S.testTask,'plan')
     S.onsetsTestDir =[S.mvpa_dir];%directory containing onsets.mat or betas_idx.mat file to be loaded in
     %S.condsTest = {{'goal_1_plan'}  {'goal_2_plan'} {'goal_3_plan'} {'goal_4_plan'} {'goal_5_plan'}};
     %S.condsTest = {{'goal1'} {'goal2'} {'goal3'} {'goal4'} {'goal5'}};
-    %S.condsTest = {{'cues1'} {'cues2'} {'cues3'} {'cues4'} {'cues5'}} %
-    S.condsTest = {{'cues1_2'} {'cues2_2'} {'cues3_2'}  {'cues4_2'} {'cues5_2'}}%
+    S.condsTest = {{'cues1'} {'cues2'} {'cues3'} {'cues4'} {'cues5'}} %
+    %S.condsTest = {{'cues1_2'} {'cues2_2'} {'cues3_2'}  {'cues4_2'} {'cues5_2'}}%
     %S.condsTest = {{'objects'}  {'scenes'} } ;
     
     %S.condsTest = {{'goal_1'}  {'goal_2'}  {'goal_3'} };
@@ -329,6 +346,7 @@ if strcmp(S.inputformat, 'betas')
         end
     end
     idxTr.sess = cell2mat(idxTr.sess)%convert to matrix format
+        
 end
 
 
@@ -347,8 +365,10 @@ S.roi_name = 'rbilat_hipp_trace.nii';
 %S.roi_name = 'rcerebell.nii';
 %S.roi_name = 'rv1.nii'
 
-%S.roi_name = 'rpfcwm.nii';%was chance for cm25 w/ nf160
+%S.roi_name = 'rpfc.nii';%was chance for cm25 w/ nf160
+%S.roi_name = 'rvs_t.nii';
 
+%S.roi_file = [S.mvpa_dir 'mask.img'];
 S.roi_file = [S.expt_dir S.subj_id '/Masks/' S.roi_name]; %this is the large-scale ROI (could be wholebrain) that workspace info is calculated for. Saves time to have this volume include any sub-volumes you are interested in (e.g. MTL if you plan on looking in hippo and phc separately)
 
 
@@ -359,8 +379,12 @@ S.roi_file = [S.expt_dir S.subj_id '/Masks/' S.roi_name]; %this is the large-sca
 %S.sigVoxels_name = 'tnativeOccTempGrey.nii';
 
 %mask the primary data loaded in the workspace. [] = no secondary mask.
-%S.secondaryMask = [S.expt_dir S.subj_id '/Masks/' S.roi_name]; % secondary mask (the specific classification mask - e.g. hippocampus within MTL)
-S.secondaryMask = [S.mvpa_dir 'mask.img'];
+if strcmp(S.inputformat, 'raw')
+    S.secondaryMask = [S.expt_dir S.subj_id '/Masks/' S.roi_name]; % secondary mask (the specific classification mask - e.g. hippocampus within MTL)
+elseif strcmp(S.inputformat, 'betas')
+    S.secondaryMask = [S.mvpa_dir 'mask.img'];
+end
+
 
 %S.secondaryMask = fullfile(par.anatdir, 'tnativeOccTempGrey.nii');
 %S.secondaryMask = ['/biac4/wagner/biac3/wagner5/alan/perceptMnemonic/fmri_data/masks/OTnoHipp.img'];
@@ -379,7 +403,7 @@ S.patternType = S.inputformat; %'raw' or 'betas'
 if strcmp(S.inputformat, 'raw')
     S.preprocPatName = 'spiral_hp_z';%stands for 'spiral imaging'_'high-pass filtered'_'z-scored'
 elseif strcmp(S.inputformat, 'betas')
-    S.preprocPatName = 'betas';%'betas_z';%
+    S.preprocPatName = 'betas';%'betas_z';%use betas_z if z-scoring betas
 end
 
 S.preprocPatCondensedName = [S.preprocPatName '_condensed'];
@@ -470,7 +494,7 @@ if strcmp(S.inputformat, 'raw')
     %S.TR_weights_set = {[.0072 .2168 .3781 .2742 .1237] [.0072 .2168 .3781 .2742 .1237]}; %approximates the canonical haemodynamic response
     %S.TR_weights_set = {[0 0.35 0.5 0.15 0] [0 0.35 0.5 0.15 0]};%v1
     %S.TR_weights_set = {[0 0.15 0.5 0.35 0] [0 0.15 0.5 0.35 0]};%v2
-    S.TR_weights_set = {[0.25 0.5 0.25] [0.25 0.5 0.25]};%v3
+    S.TR_weights_set = {[0 0.25 0.5 0.25] [0 0.25 0.5 0.25]};%v3
 elseif strcmp(S.inputformat, 'betas')
     S.TR_weights_set = {[1] [1]};%give full weighting to the 1 and only image corresponding to each event
 end
@@ -485,7 +509,8 @@ S.statmap_funct = 'statmap_anova';%'AG_statmap_anova'; % performance metric
 S.nPlsCompsSet = 0; % number of pls components to include. 0 = do not use pls components.
 S.nFolds = 160; % number of cross validation iterations - used for nFold as opposed to run-by-run leave-one-out
 
-S.class_args.nVox = 0; % number of voxels to select with feature selection e.g. [1000 5000 10000]
+S.class_args.nVox = 100; % number of voxels to select with feature selection e.g. [1000 5000 10000]
+S.class_args.fseltype = 'topn' % feature selection format: top N vox (topn) or random N vox (rand)?
 S.class_args.libLin = '-q -s 0 -B 1'; %arguments for liblinear
 S.class_args.libsvm = '-q -s 0 -t 2 -d 3'; % arguments for libsvm
 S.class_args.constant = true; % include a constant term?
