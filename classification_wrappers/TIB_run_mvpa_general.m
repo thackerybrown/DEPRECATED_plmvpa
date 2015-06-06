@@ -14,6 +14,7 @@ for b=(1:length(subj_array))
     
     %[S idxTr idxTe par] = PM_mvpa_params(subj_array(b), task, TRsperRun);
     [S idxTr idxTe par] = TIB_mvpa_params_betas(subj_array(b), task, TRsperRun);
+    
     %[S idxTr idxTe par] = TIB_localizer_mvpa_params(subj_array(b), task, TRsperRun);%runs with melina's localizer data
     %[S idxTr idxTe par] = TIB_surrogate_mvpa_params(subj_array(b), task, TRsperRun);%runs with melina's localizer data
     
@@ -25,6 +26,7 @@ for b=(1:length(subj_array))
     S.idxTr = idxTr;
     S.idxTe = idxTe;
     S.saveName = [studyName '_' S.nwayclass 'way_' S.xvaltype '_' S.subj_id]%set name for the .mat results and data log file. Will contain all the goodies for analysis.
+    S.saveName2 = [studyName '_' S.nwayclass 'way_MeanActivity' S.subj_id]
     %S.saveName = [studyName '_' S.nwayclass 'way_' S.xvaltype S.subj_id]%set name for the .mat results and data log file. Will contain all the goodies for analysis.
     
     S.subj_array = subj_array; %subjects, input to function at the "call". put in as strings of subject numbers - e.g. '12'.
@@ -215,7 +217,7 @@ for b=(1:length(subj_array))
         
         %equate the training set.
         if S.equate_number_of_trials_in_groups
-            subj = TB_balanceTrainPats(S, subj); %TB_balanceTrainPats_test(S, subj); %PM_balanceTrainPats(S, subj);
+            subj = PM_balanceTrainPats(S, subj);%TB_balanceTrainPats(S, subj); %
             S.classSelector = [S.thisSelector 'balanced'];
         end
         
@@ -238,16 +240,29 @@ for b=(1:length(subj_array))
         if S.class_args.nVox>0
             display('Performing feature selection')
             statmap_arg.use_mvpa_ver = 1;%statmap_arg = []; %%TIB - edited this so that we draw on Princeton MVPA ANOVA func instead of needing stats toolbox
-            subj = TIB_feature_select_top_N_vox(subj,S.preprocPatCondensedName,'conds',S.classSelector,'nVox_thresh',S.class_args.nVox, 'statmap_funct', S.statmap_funct, 'statmap_arg',statmap_arg);
+            subj = TIB_feature_select_top_N_vox(subj,S.preprocPatCondensedName,'conds',S.classSelector,'nVox_thresh',S.class_args.nVox, 'statmap_funct', S.statmap_funct, 'statmap_arg',statmap_arg, 'fseltype', S.class_args.fseltype);
             S.classifier_mask = subj.masks{end}.name; % use group of masks created by ANOVA
             S.classifier_mask_group = subj.masks{end}.group_name;
         end
                
         %S.class_args.penalty = S.penaltyParams(pnl);
         
+        if S.extractMeanSignal
+            [subj results] = TIB_extractMeanSignal(subj,S);
+            
+            %store the results
+            subjnum = str2num(subj_array{b})%convert subject number input from string to number format
+            res.subj{subjnum}.nVox(1).weights(1).activity{1} = results;
+            res.subj{subjnum}.nVox(1).weights(1).S = S;
+            res.subjArray{subjnum} = S.subj_id;
+            
+            savepath = '/Users/thackery/Work/Circmaze/';
+            save (fullfile(savepath, S.saveName2), 'res');
+            clear subj
+        else
 
    %            [subj] =  JR_scramble_regressors(subj,'conds','randomNFold','trainActives','conds_scrambled')%here we feed in 'randomNFold' as a surrogate for "runs" because we want to randomize within each "bin" used for xvalidation. We feed in trainActives for active datapoints because this also reflects all datapoints used for training and testing <- this may change depending on study!
-   %            [subj] =  JR_scramble_regressors(subj,'conds','runs','trainActives','conds_scrambled')
+               %[subj] =  JR_scramble_regressors(subj,'conds','runs','trainActives','conds_scrambled')
             %% run the classification.
             if S.class_args.nVox>0 %if we are using data-derived feature selection (e.g. top n voxels) we feed in the mask grp name such that each x-val iteration gets its own, non-biased, masked set of data
                 [subj results] = cross_validation(subj,S.classifier_pattern,'conds', ...
@@ -257,8 +272,8 @@ for b=(1:length(subj_array))
                     S.classSelector, S.classifier_mask,S.class_args, 'perfmet_functs', S.perfmet_functs);
             end
             
-            %             [subj results] = cross_validation(subj,S.classifier_pattern,'conds_scrambled', ...
-            %                 S.classSelector, S.classifier_mask,S.class_args, 'perfmet_functs', S.perfmet_functs);
+%                          [subj results] = cross_validation(subj,S.classifier_pattern,'conds_scrambled', ...
+%                              S.classSelector, S.classifier_mask,S.class_args, 'perfmet_functs', S.perfmet_functs);
 
         
         %set up importance maps.
@@ -290,7 +305,7 @@ for b=(1:length(subj_array))
         res.subj{subjnum}.penalty(1).nVox(1).weights(1).iter{n} = results;
         res.subj{subjnum}.penalty(1).nVox(1).weights(1).S = S;
         res.subjArray{subjnum} = S.subj_id;
-        res.subj{subjnum}.penalty(1).nVox(1).weights(1).iter{n}.confm = multiple_iterations_confusion(results);
+%        res.subj{subjnum}.penalty(1).nVox(1).weights(1).iter{n}.confm = multiple_iterations_confusion(results);
         %         res.subj{b}.penalty(1).nVox(1).weights(1).iter{n} = results;
         %         res.subj{b}.penalty(1).nVox(1).weights(1).S = S;
         %         res.subjArray = subj_array;
@@ -311,7 +326,7 @@ for b=(1:length(subj_array))
         
         
         clear subj
-        
+        end
     end
     %         a.iterations = []
     %     for i = 1:length(res.subj{1,7}.penalty.nVox.weights.iter)
