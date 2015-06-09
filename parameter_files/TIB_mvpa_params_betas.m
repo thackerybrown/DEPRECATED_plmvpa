@@ -442,11 +442,12 @@ S.regNames = {'locationA' 'locationB' 'locationC' 'locationD' 'locationE'};
 %% Special types of analysis
 S.searchlightAnalysis = 0; % run a searchlight analysis
 S.linReg = 0; % run an analysis with a continuous outcome variable
+S.scrambleregs = 0; % run an anlysis with the class labels scrambled on a run-by-run basis.
 
 %% Subsample %%alan stuff only - don't use
  S.subsampleToMatch = 0; %subsample trials to match quantities across them.
  S.balanceHiAndLowConf = 0;% match N of hi and low confidence trials?
-
+ 
 %% voxel interactions
 S.includeVoxelInteractions = 0; %include interactions among voxels? 0 = no   
 S.interactionType = 2;
@@ -509,8 +510,8 @@ S.statmap_funct = 'statmap_anova';%'AG_statmap_anova'; % performance metric
 S.nPlsCompsSet = 0; % number of pls components to include. 0 = do not use pls components.
 S.nFolds = 160; % number of cross validation iterations - used for nFold as opposed to run-by-run leave-one-out
 
-S.class_args.nVox = 100; % number of voxels to select with feature selection e.g. [1000 5000 10000]
-S.class_args.fseltype = 'topn' % feature selection format: top N vox (topn) or random N vox (rand)?
+S.class_args.nVox = 0; % number of voxels to select with feature selection e.g. [1000 5000 10000]
+S.class_args.fseltype = 'rand' % feature selection format: top N vox (topn) or random N vox (rand)?
 S.class_args.libLin = '-q -s 0 -B 1'; %arguments for liblinear
 S.class_args.libsvm = '-q -s 0 -t 2 -d 3'; % arguments for libsvm
 S.class_args.constant = true; % include a constant term?

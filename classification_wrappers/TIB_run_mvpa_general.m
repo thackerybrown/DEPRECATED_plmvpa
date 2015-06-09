@@ -261,15 +261,26 @@ for b=(1:length(subj_array))
             clear subj
         else
 
-   %            [subj] =  JR_scramble_regressors(subj,'conds','randomNFold','trainActives','conds_scrambled')%here we feed in 'randomNFold' as a surrogate for "runs" because we want to randomize within each "bin" used for xvalidation. We feed in trainActives for active datapoints because this also reflects all datapoints used for training and testing <- this may change depending on study!
-               %[subj] =  JR_scramble_regressors(subj,'conds','runs','trainActives','conds_scrambled')
-            %% run the classification.
-            if S.class_args.nVox>0 %if we are using data-derived feature selection (e.g. top n voxels) we feed in the mask grp name such that each x-val iteration gets its own, non-biased, masked set of data
-                [subj results] = cross_validation(subj,S.classifier_pattern,'conds', ...
-                    S.classSelector, S.classifier_mask_group,S.class_args, 'perfmet_functs', S.perfmet_functs);
-            else %if we aren't doing data-driven feature selection, we just use the user-specified mask for the data
-                [subj results] = cross_validation(subj,S.classifier_pattern,'conds', ...
+            %scrambled classification analysis
+            if S.scrambleregs == 1
+                if strcmp(S.xvaltype,'nf')%if run labels have been replaced by random nfolds
+                    [subj] =  JR_scramble_regressors(subj,'conds','randomNFold','trainActives','conds_scrambled');%here we feed in 'randomNFold' as a surrogate for "runs" because we want to randomize within each "bin" used for xvalidation. We feed in trainActives for active datapoints because this also reflects all datapoints used for training and testing <- this may change depending on study!
+                else %if we are doing 'loo'
+                    [subj] =  JR_scramble_regressors(subj,'conds','runs','trainActives','conds_scrambled');%here we feed in 'randomNFold' as a surrogate for "runs" because we want to randomize within each "bin" used for xvalidation. We feed in trainActives for active datapoints because this also reflects all datapoints used for training and testing <- this may change depending on study!
+                end
+                [subj results] = cross_validation(subj,S.classifier_pattern,'conds_scrambled', ...
                     S.classSelector, S.classifier_mask,S.class_args, 'perfmet_functs', S.perfmet_functs);
+                
+                %classify with correct (unscrambled) class labels
+            elseif S.scrambleregs == 0
+                if S.class_args.nVox>0 %if we are using data-derived feature selection (e.g. top n voxels) we feed in the mask grp name such that each x-val iteration gets its own, non-biased, masked set of data
+                    [subj results] = cross_validation(subj,S.classifier_pattern,'conds', ...
+                        S.classSelector, S.classifier_mask_group,S.class_args, 'perfmet_functs', S.perfmet_functs);
+                else %if we aren't doing data-driven feature selection, we just use the user-specified mask for the data
+                    [subj results] = cross_validation(subj,S.classifier_pattern,'conds', ...
+                        S.classSelector, S.classifier_mask,S.class_args, 'perfmet_functs', S.perfmet_functs);
+                end
+                
             end
             
 %                          [subj results] = cross_validation(subj,S.classifier_pattern,'conds_scrambled', ...
