@@ -497,7 +497,7 @@ if strcmp(S.inputformat, 'raw')
     %S.TR_weights_set = {[0 0.15 0.5 0.35 0] [0 0.15 0.5 0.35 0]};%v2
     S.TR_weights_set = {[0 0.25 0.5 0.25] [0 0.25 0.5 0.25]};%v3
 elseif strcmp(S.inputformat, 'betas')
-    S.TR_weights_set = {[1] [1]};%give full weighting to the 1 and only image corresponding to each event
+    S.TR_weights_set = {{[1] [1]}};%give full weighting to the 1 and only image corresponding to each event
 end
 
 
@@ -510,7 +510,7 @@ S.statmap_funct = 'statmap_anova';%'AG_statmap_anova'; % performance metric
 S.nPlsCompsSet = 0; % number of pls components to include. 0 = do not use pls components.
 S.nFolds = 160; % number of cross validation iterations - used for nFold as opposed to run-by-run leave-one-out
 
-S.class_args.nVox = 0; % number of voxels to select with feature selection e.g. [1000 5000 10000]
+S.class_args.nVox = 50; % number of voxels to select with feature selection e.g. [1000 5000 10000]
 S.class_args.fseltype = 'rand' % feature selection format: top N vox (topn) or random N vox (rand)?
 S.class_args.libLin = '-q -s 0 -B 1'; %arguments for liblinear
 S.class_args.libsvm = '-q -s 0 -t 2 -d 3'; % arguments for libsvm

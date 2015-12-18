@@ -123,6 +123,7 @@ for m=1:length(map_patnames)
   created.function = 'create_nVox_thresh_mask';
   created.map_patname = cur_map_patname;
   created.args = args;
+  created.mvc = maskvec;
   subj = add_created(subj,'mask',cur_maskname,created);
   
 end % for m
