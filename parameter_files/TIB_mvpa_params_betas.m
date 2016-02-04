@@ -356,7 +356,7 @@ S.vol_info = spm_vol(fullfile(par.funcdir, 'run_03', 'urun3_0006.nii')); %get fu
 %S.roiWithNonTaksVoxels = fullfile(par.anatdir, 'tnativeOccTemp.nii');
 %S.roiWithNonTaksVoxelsName = 'tnativeOccTemp.nii';
 
-%S.roi_name = 'rbilat_hipp_trace.nii';
+S.roi_name = 'rbilat_hipp_trace.nii';
 %S.roi_name = 'rphc_trace.nii';
 %S.roi_name = 'rprc_trace.nii';
 %S.roi_name = 'rec_trace.nii';
@@ -367,7 +367,7 @@ S.vol_info = spm_vol(fullfile(par.funcdir, 'run_03', 'urun3_0006.nii')); %get fu
 
 %S.roi_name = 'rpfc.nii';%was chance for cm25 w/ nf160
 %S.roi_name = 'rvs_t.nii';
-S.roi_name = 'gm_cm12.nii';
+%S.roi_name = 'gm_cm12.nii';
 
 S.roi_file = [S.expt_dir S.subj_id '/Masks/' S.roi_name]; %this is the large-scale ROI (could be wholebrain) that workspace info is calculated for. Saves time to have this volume include any sub-volumes you are interested in (e.g. MTL if you plan on looking in hippo and phc separately)
 

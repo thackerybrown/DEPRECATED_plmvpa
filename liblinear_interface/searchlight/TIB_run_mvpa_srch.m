@@ -510,7 +510,7 @@ for b=(1:length(subj_array))
                 %             'thresh', []);
                 
                 %% WRITE OUT MEAN SEARCHLIGHT MAP TO .IMG FILE
-                if args.memsave >= 1 %If maps for each iteration were stored separately
+                if statmap_srch_arg.memsave >= 1 %If maps for each iteration were stored separately
                     
                     % average searchlight performance maps across runs
                     for r=1:length(selnames)
@@ -524,7 +524,7 @@ for b=(1:length(subj_array))
                     
                     vol_info = subj.patterns{1,3}.header.vol{1,1}{1,1}
                     
-                    vol_info.fname = [S.group_mvpa_dir '/' S.saveName '_2vox_radius_searchlight.img'];%critical - otherwise you will overwrite your beta!
+                    vol_info.fname = [S.group_mvpa_dir '/' S.saveName '_3vox_radius_searchlight.img'];%critical - otherwise you will overwrite your beta!
                     
                     sl_map = zeros(vol_info.dim);
                     
