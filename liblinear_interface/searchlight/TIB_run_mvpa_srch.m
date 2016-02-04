@@ -469,6 +469,8 @@ for b=(1:length(subj_array))
                 %for some functions or debugging scenarios.
                 statmap_srch_arg.memsave = 2;
                 
+                statmap_srch_arg.parallel = 0; =%run searchlights in parallel? 1 = yes
+                
                 %         subj = JR_scramble_regressors(subj,'conds',[SL_SELECTOR_TO_USE '_bal_1'],'conditions_of_interest_bal_within_runs','conds_scrambled');
                 
                 
