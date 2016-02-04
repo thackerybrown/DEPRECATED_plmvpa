@@ -162,7 +162,7 @@ if args.parallel == 1
         %added by TIB to optionally clear class_scratch. This info is potentially
         %useful for additional data exploration and/or debugging, but NOT needed to simply generate searchligh perf maps
         if args.memsave == 2
-            scratch = rmfield(scratch1, 'class_scratch');
+            scratch1 = rmfield(scratch1, 'class_scratch');
         end
         
     end
