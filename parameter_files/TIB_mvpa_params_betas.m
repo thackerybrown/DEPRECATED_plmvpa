@@ -356,7 +356,7 @@ S.vol_info = spm_vol(fullfile(par.funcdir, 'run_03', 'urun3_0006.nii')); %get fu
 %S.roiWithNonTaksVoxels = fullfile(par.anatdir, 'tnativeOccTemp.nii');
 %S.roiWithNonTaksVoxelsName = 'tnativeOccTemp.nii';
 
-S.roi_name = 'rbilat_hipp_trace.nii';
+%S.roi_name = 'rbilat_hipp_trace.nii';
 %S.roi_name = 'rphc_trace.nii';
 %S.roi_name = 'rprc_trace.nii';
 %S.roi_name = 'rec_trace.nii';
@@ -367,10 +367,12 @@ S.roi_name = 'rbilat_hipp_trace.nii';
 
 %S.roi_name = 'rpfc.nii';%was chance for cm25 w/ nf160
 %S.roi_name = 'rvs_t.nii';
+S.roi_name = 'gm_cm12.nii';
 
-%S.roi_file = [S.mvpa_dir 'mask.img'];
 S.roi_file = [S.expt_dir S.subj_id '/Masks/' S.roi_name]; %this is the large-scale ROI (could be wholebrain) that workspace info is calculated for. Saves time to have this volume include any sub-volumes you are interested in (e.g. MTL if you plan on looking in hippo and phc separately)
 
+%S.roi_name = 'mask.img';
+%S.roi_file = [S.mvpa_dir 'mask.img'];
 
 %S.noiseVoxels_file = fullfile(par.anatdir, 'rnativec2V001.nii');
 %S.noiseVoxels_name = 'rnativec2V001.nii';
@@ -423,8 +425,8 @@ S.num_results_iter = 1; % number of times to run the entire classification proce
 S.num_iter_with_same_data = 1; % number of times to run the classfication step for a given subset of data
 
 %% Balancing Parameters
-S.equate_number_of_trials_in_groups = 0; % equate number of trials in conditions
-S.numBalancedIts = 10; % number of iterations to run, with different randomization for the balancing
+S.equate_number_of_trials_in_groups = 1; % equate number of trials in conditions
+S.numBalancedIts = 1; % number of iterations to run, with different randomization for the balancing
 
 %% Z-Scoring and outlier detection
 S.perform_second_round_of_zscoring = 0;  % z-score data again immediately prior to classification 
@@ -495,7 +497,7 @@ if strcmp(S.inputformat, 'raw')
     %S.TR_weights_set = {[.0072 .2168 .3781 .2742 .1237] [.0072 .2168 .3781 .2742 .1237]}; %approximates the canonical haemodynamic response
     %S.TR_weights_set = {[0 0.35 0.5 0.15 0] [0 0.35 0.5 0.15 0]};%v1
     %S.TR_weights_set = {[0 0.15 0.5 0.35 0] [0 0.15 0.5 0.35 0]};%v2
-    S.TR_weights_set = {[0 0.25 0.5 0.25] [0 0.25 0.5 0.25]};%v3
+    S.TR_weights_set = {{[0 0.25 0.5 0.25] [0 0.25 0.5 0.25]}};%v3
 elseif strcmp(S.inputformat, 'betas')
     S.TR_weights_set = {{[1] [1]}};%give full weighting to the 1 and only image corresponding to each event
 end
@@ -510,8 +512,8 @@ S.statmap_funct = 'statmap_anova';%'AG_statmap_anova'; % performance metric
 S.nPlsCompsSet = 0; % number of pls components to include. 0 = do not use pls components.
 S.nFolds = 160; % number of cross validation iterations - used for nFold as opposed to run-by-run leave-one-out
 
-S.class_args.nVox = 50; % number of voxels to select with feature selection e.g. [1000 5000 10000]
-S.class_args.fseltype = 'rand' % feature selection format: top N vox (topn) or random N vox (rand)?
+S.class_args.nVox = 0; % number of voxels to select with feature selection e.g. [1000 5000 10000]
+S.class_args.fseltype = 'topn' % feature selection format: top N vox (topn) or random N vox (rand)?
 S.class_args.libLin = '-q -s 0 -B 1'; %arguments for liblinear
 S.class_args.libsvm = '-q -s 0 -t 2 -d 3'; % arguments for libsvm
 S.class_args.constant = true; % include a constant term?
