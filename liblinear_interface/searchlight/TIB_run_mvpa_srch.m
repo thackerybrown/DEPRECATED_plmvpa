@@ -490,24 +490,36 @@ for b=(1:length(subj_array))
                 end
                 
                 % run searchlight classification
-                subj = feature_select(subj, ...
-                    S.classifier_pattern, ... %'epi_d_hp_z_condensed', ... %data
-                    'conds', ... % binary regs
-                    S.classSelector, ... %SL_SELECTOR_TO_USE, ... % selector, typically runs, or balanced run iterations (runs*balancing its)
-                    'statmap_funct', 'TIB_statmap_searchlight', ... %function
-                    'statmap_arg',statmap_srch_arg, ...
-                    'new_map_patname', 'epi_d_hp_z_condensed_srch', ...
-                    'thresh', []);
+                %scrambled classification analysis
+                if S.scrambleregs == 1
+                    if strcmp(S.xvaltype,'nf')%if run labels have been replaced by random nfolds
+                        [subj] =  JR_scramble_regressors(subj,'conds','randomNFold','trainActives','conds_scrambled');%here we feed in 'randomNFold' as a surrogate for "runs" because we want to randomize within each "bin" used for xvalidation. We feed in trainActives for active datapoints because this also reflects all datapoints used for training and testing <- this may change depending on study!
+                    else %if we are doing 'loo'
+                        [subj] =  JR_scramble_regressors(subj,'conds','runs','trainActives','conds_scrambled');%here we feed in 'randomNFold' as a surrogate for "runs" because we want to randomize within each "bin" used for xvalidation. We feed in trainActives for active datapoints because this also reflects all datapoints used for training and testing <- this may change depending on study!
+                    end
+                    
+                    % run with the scrambled regressors
+                    subj = feature_select(subj, ...
+                        S.classifier_pattern, ... %data
+                        'conds_scrambled', ... % binary regs
+                        S.classSelector, ... % selector
+                        'statmap_funct', 'TIB_statmap_searchlight', ... %function
+                        'statmap_arg',statmap_srch_arg, ...
+                        'new_map_patname', 'epi_d_hp_z_condensed_srch_scrambled', ...
+                        'thresh', []);
+                    
+                elseif S.scrambleregs == 0
+                    subj = feature_select(subj, ...
+                        S.classifier_pattern, ... %'epi_d_hp_z_condensed', ... %data
+                        'conds', ... % binary regs
+                        S.classSelector, ... %SL_SELECTOR_TO_USE, ... % selector, typically runs, or balanced run iterations (runs*balancing its)
+                        'statmap_funct', 'TIB_statmap_searchlight', ... %function
+                        'statmap_arg',statmap_srch_arg, ...
+                        'new_map_patname', 'epi_d_hp_z_condensed_srch', ...
+                        'thresh', []);
                 
-                % rerun with the scrambled regressors
-                %         subj = feature_select(subj, ...
-                %             'epi_d_hp_z_condensed', ... %data
-                %             'conds_scrambled', ... % binary regs
-                %             SL_SELECTOR_TO_USE, ... % selector
-                %             'statmap_funct', 'statmap_searchlight', ... %function
-                %             'statmap_arg',statmap_srch_arg, ...
-                %             'new_map_patname', 'epi_d_hp_z_condensed_srch_scrambled', ...
-                %             'thresh', []);
+                end
+
                 
                 %% WRITE OUT MEAN SEARCHLIGHT MAP TO .IMG FILE
                 if statmap_srch_arg.memsave >= 1 %If maps for each iteration were stored separately
@@ -578,7 +590,7 @@ for b=(1:length(subj_array))
                     
                     vol_info = subj.patterns{1,3}.header.vol{1,1}{1,1}
                     
-                    vol_info.fname = [S.group_mvpa_dir '/' S.saveName '_2vox_radius_searchlight.img'];%critical - otherwise you will overwrite your beta!
+                    vol_info.fname = [S.group_mvpa_dir '/' S.saveName '_3vox_radius_searchlight.img'];%critical - otherwise you will overwrite your beta!
                     
                     sl_map = zeros(vol_info.dim);
                     
