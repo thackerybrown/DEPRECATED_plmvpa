@@ -241,7 +241,11 @@ created.extra_arg = extra_arg;
 created.extra_arg.adj_list = NaN; % to save memory
 created.args = args;
 created.args.adj_list = NaN; % to save memory
-created.scratch = scratch;
+if args.parallel == 1
+    created.scratch = scratch1;
+else
+    created.scratch = scratch;
+end
 created.unused = NaN; % to save memory
 subj = add_created(subj,'pattern',new_map_patname,created);
 
@@ -255,7 +259,11 @@ if args.memsave >= 1
     %added by TIB to optionally clear class_scratch. This info is potentially
     %useful for additional data exploration and/or debugging, but NOT needed to simply generate searchligh perf maps
     if args.memsave == 2
-       scratch = rmfield(scratch, 'class_scratch');
+        if args.parallel == 1
+            scratch1 = rmfield(scratch1, 'class_scratch');
+        else
+            scratch = rmfield(scratch, 'class_scratch');
+        end
     end
     
 end

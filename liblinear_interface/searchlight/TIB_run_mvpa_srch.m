@@ -546,6 +546,10 @@ for b=(1:length(subj_array))
                     
                     spm_write_vol(vol_info, sl_map);
                     
+                    %save out subj for later map reconstruction
+                    subjfpath = [S.group_mvpa_dir '/'  S.saveName 'subjfile'];
+                    save (subjfpath, 'subj', '-v7.3')
+                    
                 else
                     
                     proclus = 0; %0 = run locally (not proclus)

@@ -217,7 +217,7 @@ for b=(1:length(subj_array))
         
         %equate the training set.
         if S.equate_number_of_trials_in_groups
-            subj = PM_balanceTrainPats(S, subj);%TB_balanceTrainPats(S, subj); %
+            subj = TB_balanceTrainPats(S, subj);%TB_balanceTrainPats(S, subj); %
             S.classSelector = [S.thisSelector 'balanced'];
         end
         
