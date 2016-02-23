@@ -50,10 +50,13 @@ if strcmp(S.inputformat, 'raw')
     S.onsets_filename_tst = ['onsets_' S.subj_id '_allruns']%['onsets_' S.subj_id '_allruns_test']%S.onsets_filename %added for train on 1, test on another - this assumes the data are actually in the same set of files.
 elseif strcmp(S.inputformat, 'betas')
     S.onsets_filename = ['onsets_' S.subj_id '_allruns_cuenew_rearranged'];%_wnoplan_d2']%['cuebycue_onsets_' S.subj_id]%
+    S.onsets_filename_tr = ['onsets_' S.subj_id '_allruns_cuenew_rearranged']%['onsets_' S.subj_id '_allruns_cuengoal_rearranged']%['onsets_' S.subj_id '_allruns']%S.onsets_filename %added for train on 1, test on another - this assumes the data are actually in the same set of files.
+    S.onsets_filename_tst = ['onsets_' S.subj_id '_allruns_cuenew_rearranged']%['onsets_' S.subj_id '_allruns_cuengoal_rearranged']%['onsets_' S.subj_id '_allruns_test']%S.onsets_filename %added for train on 1, test on another - this assumes the data are actually in the same set of files.
+
     
-    %S.onsets_filename = ['onsets_' S.subj_id '_allruns_cuengoal_rearranged_goald7_wnogoalhold'];%_wnoplan_d2']%['cuebycue_onsets_' S.subj_id]%
-    S.onsets_filename_tr = ['onsets_' S.subj_id '_allruns_cuengoal_rearranged_goald7_wnogoalhold']%['onsets_' S.subj_id '_allruns_cuengoal_rearranged']%['onsets_' S.subj_id '_allruns']%S.onsets_filename %added for train on 1, test on another - this assumes the data are actually in the same set of files.
-    S.onsets_filename_tst = ['onsets_' S.subj_id '_allruns_cuengoal_rearranged_goald7_wnogoalhold']%['onsets_' S.subj_id '_allruns_cuengoal_rearranged']%['onsets_' S.subj_id '_allruns_test']%S.onsets_filename %added for train on 1, test on another - this assumes the data are actually in the same set of files.
+%    S.onsets_filename = ['onsets_' S.subj_id '_allruns_cuengoal_rearranged_goald7_wnogoalhold'];%_wnoplan_d2']%['cuebycue_onsets_' S.subj_id]%
+%    S.onsets_filename_tr = ['onsets_' S.subj_id '_allruns_cuengoal_rearranged_goald7_wnogoalhold']%['onsets_' S.subj_id '_allruns_cuengoal_rearranged']%['onsets_' S.subj_id '_allruns']%S.onsets_filename %added for train on 1, test on another - this assumes the data are actually in the same set of files.
+%    S.onsets_filename_tst = ['onsets_' S.subj_id '_allruns_cuengoal_rearranged_goald7_wnogoalhold']%['onsets_' S.subj_id '_allruns_cuengoal_rearranged']%['onsets_' S.subj_id '_allruns_test']%S.onsets_filename %added for train on 1, test on another - this assumes the data are actually in the same set of files.
 
     S.betaidx_filename = [S.subj_id '_betas_idx']
     S.betaidx_filename_tr = [S.subj_id '_betas_idx_tr']

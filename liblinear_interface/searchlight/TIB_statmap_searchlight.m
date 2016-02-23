@@ -161,9 +161,9 @@ if args.parallel == 1
         
         %added by TIB to optionally clear class_scratch. This info is potentially
         %useful for additional data exploration and/or debugging, but NOT needed to simply generate searchligh perf maps
-        if args.memsave == 2
-            scratch1 = rmfield(scratch1, 'class_scratch');
-        end
+        %if args.memsave == 2
+        %    scratch1 = rmfield(scratch1, 'class_scratch');
+        %end
         
     end
     
@@ -209,9 +209,9 @@ else
         
         %added by TIB to optionally clear class_scratch. This info is potentially
         %useful for additional data exploration and/or debugging, but NOT needed to simply generate searchligh perf maps
-        if args.memsave == 2
-            scratch = rmfield(scratch, 'class_scratch');
-        end
+        %if args.memsave == 2
+        %    scratch = rmfield(scratch, 'class_scratch');
+        %end
         
     end
     
@@ -248,8 +248,16 @@ subj = add_created(subj,'pattern',new_map_patname,created);
 %added by TIB to optionally move pattern information to HDD and out of RAM.
 if args.memsave >= 1
     %patpath = ['/hsgs/projects/awagner/thackery/Circmaze_mvpa_files/betas/' subj.header.id]
-    patpath = ['/Volumes/group/awagner/wagner/thackery/testo/' subj.header.id]
-    [subj] = move_pattern_to_hd(subj, new_map_patname, 'subdir', patpath)
+    patpath = ['/Volumes/group/awagner/wagner/thackery/testo/' subj.header.id];
+    %subj.logits = scratch.multi_acts; %add the class*trial logits matrix from this classifier iteration (assumes we are moving patterns to HD on a "run-by-run" iteration basis
+    [subj] = TIB_move_pattern_to_hd(subj, new_map_patname, 'subdir', patpath, 'memsave', args.memsave);
+    
+    %added by TIB to optionally clear class_scratch. This info is potentially
+    %useful for additional data exploration and/or debugging, but NOT needed to simply generate searchligh perf maps
+    if args.memsave == 2
+       scratch = rmfield(scratch, 'class_scratch');
+    end
+    
 end
 
 
