@@ -372,7 +372,7 @@ for b=(1:length(subj_array))
             spm_write_vol(vol_info, sl_map);
             
             %save out subj for later stats
-            subjfpath = [S.group_mvpa_dir '/'  S.saveName 'clusterstats'];
+            subjfpath = [S.group_mvpa_dir '/'  S.saveName 'clusterstats_' vxrad 'vox'];
             save (subjfpath, 'tmptrueres', 'tmpscramres', '-v7.3')
             
             
