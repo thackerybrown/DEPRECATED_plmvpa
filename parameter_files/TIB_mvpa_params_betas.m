@@ -67,7 +67,11 @@ end
 
 %% directories~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %S.expt_dir = ['/mnt/wagner/thackery/' S.exp_name '/subs_preprocessed_fermi_nospikerepair/'];
-S.expt_dir = ['/Volumes/group/awagner/wagner/thackery/' S.exp_name '/subs_preprocessed_fermi_nospikerepair/'];
+%S.expt_dir = ['/Volumes/group/awagner/wagner/thackery/' S.exp_name '/subs_preprocessed_fermi_nospikerepair/'];
+
+%windows version of path...
+S.expt_dir = ['Z:/wagner/thackery/' S.exp_name '/subs_preprocessed_fermi_nospikerepair/'];
+
 
 %model directory (onsets and betas in here)
 if strcmp(S.inputformat, 'raw')
@@ -428,7 +432,7 @@ S.num_results_iter = 1; % number of times to run the entire classification proce
 S.num_iter_with_same_data = 1; % number of times to run the classfication step for a given subset of data
 
 %% Balancing Parameters
-S.equate_number_of_trials_in_groups = 1; % equate number of trials in conditions
+S.equate_number_of_trials_in_groups = 0; % equate number of trials in conditions
 S.numBalancedIts = 1; % number of iterations to run, with different randomization for the balancing
 
 %% Z-Scoring and outlier detection
@@ -477,7 +481,7 @@ S.denoiseOpt.denoisespec = '10001'; %which parts of the glm output do we want to
 %% Mean Signal Extraction Params
 % parameters for selecting the mean signal from a class-specific ROI for each pattern.
 
-S.extractMeanSignal = 0; %1 - do signal extraction. 0 = don't do this. 
+S.extractMeanSignal = 1; %1 - do signal extraction. 0 = don't do this. 
 S.defineROIsFromANOVAFS = 0; % define ROIs using ANOVA-based feature selection, instead of pre-defining them. 
 S.logreg_2Features = 0; %perform a logistic regression, using the two extracted intensity vectors
 %**********************************************************************************come back to this section once up and running......%%%%

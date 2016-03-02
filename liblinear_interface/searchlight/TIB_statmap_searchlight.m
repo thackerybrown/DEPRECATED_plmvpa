@@ -111,8 +111,9 @@ map = nan(nVox,1);
 % loop over the spheres (or whatever adjacency neighborhood you're
 % using)
 if args.parallel == 1
-    
-    multilog = zeros([nVox,size(scratch.regs3)]); %initialize matrix to store logits from the parfor scenario
+    if args.memsave < 3
+        multilog = zeros([nVox,size(scratch.regs3)]); %initialize matrix to store logits from the parfor scenario
+    end
     
     cluster = parcluster('local');
     tmpdirforpool = '/hsgs/projects/awagner/thackery/parfortest';
@@ -160,17 +161,23 @@ if args.parallel == 1
         
         %[map(v) subj.acts scratch] = funct_h(sphere, regs1, scratch);
         [map(v) scratch1] = funct_h(sphere, regs1, scratch1);
-        multilog(v,:,:) = scratch1.multi_acts(v,:,:);
+        
+        if args.memsave < 3
+            multilog(v,:,:) = scratch1.multi_acts(v,:,:);
+        end
         
         %added by TIB to optionally clear class_scratch. This info is potentially
         %useful for additional data exploration and/or debugging, but NOT needed to simply generate searchligh perf maps
-        %if args.memsave == 2
-        %    scratch1 = rmfield(scratch1, 'class_scratch');
-        %end
+        if args.memsave == 3
+            scratch1 = rmfield(scratch1, 'class_scratch');
+        end
         
     end
     
-    scratch.multi_acts = multilog;%append the multilog to scratch now to write out prior to clearing everything
+    if args.memsave < 3
+        scratch.multi_acts = multilog;%append the multilog to scratch now to write out prior to clearing everything
+    end
+    
     matlabpool close;
     
 else
@@ -245,11 +252,11 @@ created.extra_arg = extra_arg;
 created.extra_arg.adj_list = NaN; % to save memory
 created.args = args;
 created.args.adj_list = NaN; % to save memory
-% if args.parallel == 1
-%     created.scratch = scratch1;
-% else
+%if args.memsave == 3
+%    created.scratch = scratch1;
+%else
     created.scratch = scratch;
-% end
+%end
 created.unused = NaN; % to save memory
 subj = add_created(subj,'pattern',new_map_patname,created);
 
@@ -263,12 +270,14 @@ if args.memsave >= 1
     %added by TIB to optionally clear class_scratch. This info is potentially
     %useful for additional data exploration and/or debugging, but NOT needed to simply generate searchligh perf maps
     if args.memsave == 2
-%         if args.parallel == 1
-%             scratch1 = rmfield(scratch1, 'class_scratch');
-%         else
-            scratch
-            %scratch = rmfield(scratch, 'class_scratch');
-%        end
+        %         if args.parallel == 1
+        %             scratch1 = rmfield(scratch1, 'class_scratch');
+        %         else
+        scratch
+        %scratch = rmfield(scratch, 'class_scratch');
+        %        end
+        %    elseif args.memsave == 2
+        
     end
     
 end

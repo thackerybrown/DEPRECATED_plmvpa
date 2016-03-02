@@ -1,5 +1,11 @@
-function [subj results] = TIB_extractMeanSignal(subj, S)
+function [subj results] = TIB_extractMeanSignal(subj, S, varargin)
 %Returns mean activity by timepoint-of-interest from current ROI
+% Revision 1.1
+% adds functionality to save out condition-specific activity by voxel (as
+% opposed to ROI-level mean) and overall class preference of each voxel
+% (max signal value)
+
+
 % Revision 1.0
 %   currently a very simple approach - we take the same patterns that would
 %   be used as testing patterns for classification, collapse across voxels, and return these
@@ -7,6 +13,13 @@ function [subj results] = TIB_extractMeanSignal(subj, S)
 %   behavior, logits, etc)
 % *much of this code draws from "cross_validation.m" to read in the
 % patterns appropriately
+
+%specific default arguments
+defaults.storevoxlevel = 0;%1 = yes. By default we only store out mean activity for whole ROI per trial
+defaults.genscrambledmeans = 0;%1 = yes. By default we only store out mean activity for whole ROI per trial
+
+args = propval(varargin,defaults);
+
 
 patin = S.classifier_pattern;%pattern name fed in - this is currently THE pattern name used for classification. This may not be what you want in some circumstances.
 maskgroup = S.classifier_mask;
@@ -44,7 +57,63 @@ meanpats = meanpats(actives);
 
 results.meanacts = meanpats;
 
-
+%store mean voxel signal values separately on condition-by-condition basis,
+%and class preference of each voxel
+if args.storevoxlevel == 1
+    nonmeanpats = masked_pats(:,actives);
+    
+    meanvoxpercond = zeros(length(nonmeanpats'),S.num_conds); %initialize mean voxel value*cond matrix
+    for icon = 1:S.num_conds
+        a = nonmeanpats(:,S.onsets_test_in_classifier{icon}); %filter trials to one condition
+        b = mean(a'); %mean per voxel across trials
+        meanvoxpercond(:,icon) = b';
+        
+    end
+    
+    meanvoxcondpref = zeros(length(nonmeanpats'),1); %initialize mean voxel condition preference matrix
+    for ivx = 1:length(nonmeanpats')
+        [c meanvoxcondpref(ivx,1)] = max(meanvoxpercond(ivx,:));
+    end
+    
+    if args.genscrambledmeans == 1
+        %% create preference maps with scrambled regs
+        scramblingnum = 100; % how many scrambling iterations to do?
+        
+        scramidx = []; %initialize empty idx from scrambling
+        for s = 1:scramblingnum
+            %oldidx = num2str(scramidx);
+            newidx = num2str(sum([scramidx 1]));
+            %regname = ['conds' oldidx];
+            newregname = ['conds' newidx];
+            [subj] =  TB_scramble_regressors(subj,'conds','runs','trainActives',newregname, 'ignore_adjacency', 0);
+            
+            meanvoxperrandcond{s} = zeros(length(nonmeanpats'),S.num_conds); %initialize mean voxel value*cond matrix
+            for icon = 1:S.num_conds
+                %a = nonmeanpats(:,S.onsets_test_in_classifier{icon}); %filter trials to one condition
+                x = logical(subj.regressors{1,s+1}.mat(icon,:));
+                a = nonmeanpats(:,x);
+                
+                b = mean(a'); %mean per voxel across trials
+                meanvoxperrandcond{s}(:,icon) = b';
+                
+            end
+            
+            meanvoxrandcondpref{s} = zeros(length(nonmeanpats'),1); %initialize mean voxel condition preference matrix
+            for ivx = 1:length(nonmeanpats')
+                [c meanvoxrandcondpref{s}(ivx,1)] = max(meanvoxperrandcond{s}(ivx,:));
+            end
+            
+            %update scrambling idx
+            scramidx = [scramidx 1];
+        end
+        
+    end
+    %% store out results
+    
+    results.meanvoxpercond = meanvoxpercond; %write out mean signal value per voxel separately per cond
+    results.meanvoxcondpref = meanvoxcondpref; %write out mean class preference per voxel (max signal)
+    results.meanvoxrandcondpref = meanvoxrandcondpref; % write out randomization "preference" maps
+end
 
 end
 

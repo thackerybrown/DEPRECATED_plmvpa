@@ -464,10 +464,12 @@ for b=(1:length(subj_array))
                 %employ strong memory-saving measures?
                 %   1 = yes, move patterns from searchlight to separate files.
                 %   2 = yes, move patterns from searchlight to separate
-                %   files AND remove scratch.class_scratch after it is no
-                %longer immediately needed. NOTE: you may still want this
+                %   files AND store out logits per class per trial (VERY large files).
+                %   3 = yes, move patterns from searchlight to separate
+                %   files BUT remove scratch.class_scratch after it is no
+                %longer immediately needed and DON'T write out logits per trial. NOTE: you may still want this
                 %for some functions or debugging scenarios.
-                statmap_srch_arg.memsave = 2;
+                statmap_srch_arg.memsave = 3;
                 
                 statmap_srch_arg.parallel = 0; %run searchlights in parallel? 1 = yes
                 
@@ -517,9 +519,9 @@ for b=(1:length(subj_array))
                         'statmap_arg',statmap_srch_arg, ...
                         'new_map_patname', 'epi_d_hp_z_condensed_srch', ...
                         'thresh', []);
-                
+                    
                 end
-
+                
                 
                 %% WRITE OUT MEAN SEARCHLIGHT MAP TO .IMG FILE
                 if statmap_srch_arg.memsave >= 1 %If maps for each iteration were stored separately
@@ -546,9 +548,11 @@ for b=(1:length(subj_array))
                     
                     spm_write_vol(vol_info, sl_map);
                     
-                    %save out subj for later map reconstruction
-                    subjfpath = [S.group_mvpa_dir '/'  S.saveName 'subjfile'];
-                    save (subjfpath, 'subj', '-v7.3')
+                    if statmap_srch_arg.memsave < 3
+                        %save out subj for later map reconstruction
+                        subjfpath = [S.group_mvpa_dir '/'  S.saveName 'subjfile'];
+                        save (subjfpath, 'subj', '-v7.3');
+                    end
                     
                 else
                     
