@@ -67,10 +67,10 @@ end
 
 %% directories~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %S.expt_dir = ['/mnt/wagner/thackery/' S.exp_name '/subs_preprocessed_fermi_nospikerepair/'];
-%S.expt_dir = ['/Volumes/group/awagner/wagner/thackery/' S.exp_name '/subs_preprocessed_fermi_nospikerepair/'];
+S.expt_dir = ['/Volumes/group/awagner/wagner/thackery/' S.exp_name '/subs_preprocessed_fermi_nospikerepair/'];
 
 %windows version of path...
-S.expt_dir = ['Z:/wagner/thackery/' S.exp_name '/subs_preprocessed_fermi_nospikerepair/'];
+%S.expt_dir = ['Z:/wagner/thackery/' S.exp_name '/subs_preprocessed_fermi_nospikerepair/'];
 
 
 %model directory (onsets and betas in here)
@@ -428,7 +428,7 @@ end
 S.inactivateArtifacts = 0; %remove artifact trials? 0 = no.
 
 %% Iteration Parameters
-S.num_results_iter = 1; % number of times to run the entire classification process (select subset of the data and train/test classifier)
+S.num_results_iter = 10; % number of times to run the entire classification process (select subset of the data and train/test classifier)
 S.num_iter_with_same_data = 1; % number of times to run the classfication step for a given subset of data
 
 %% Balancing Parameters
@@ -451,7 +451,7 @@ S.regNames = {'locationA' 'locationB' 'locationC' 'locationD' 'locationE'};
 %% Special types of analysis
 S.searchlightAnalysis = 0; % run a searchlight analysis
 S.linReg = 0; % run an analysis with a continuous outcome variable
-S.scrambleregs = 0; % run an anlysis with the class labels scrambled on a run-by-run basis.
+S.scrambleregs = 1; % run an anlysis with the class labels scrambled on a run-by-run basis.
 
 %% Subsample %%alan stuff only - don't use
  S.subsampleToMatch = 0; %subsample trials to match quantities across them.
@@ -481,7 +481,7 @@ S.denoiseOpt.denoisespec = '10001'; %which parts of the glm output do we want to
 %% Mean Signal Extraction Params
 % parameters for selecting the mean signal from a class-specific ROI for each pattern.
 
-S.extractMeanSignal = 1; %1 - do signal extraction. 0 = don't do this. 
+S.extractMeanSignal = 0; %1 - do signal extraction. 0 = don't do this. 
 S.defineROIsFromANOVAFS = 0; % define ROIs using ANOVA-based feature selection, instead of pre-defining them. 
 S.logreg_2Features = 0; %perform a logistic regression, using the two extracted intensity vectors
 %**********************************************************************************come back to this section once up and running......%%%%

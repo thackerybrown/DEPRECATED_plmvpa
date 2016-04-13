@@ -538,7 +538,7 @@ for b=(1:length(subj_array))
                     
                     vol_info = subj.patterns{1,3}.header.vol{1,1}{1,1}
                     
-                    vol_info.fname = [S.group_mvpa_dir '/' S.saveName '_3vox_radius_searchlight.img'];%critical - otherwise you will overwrite your beta!
+                    vol_info.fname = [S.group_mvpa_dir '/' S.saveName '_3vox_radius_searchlight' num2str(n) '.img'];%critical - otherwise you will overwrite your beta!
                     
                     sl_map = zeros(vol_info.dim);
                     
@@ -598,7 +598,7 @@ for b=(1:length(subj_array))
                     
                     vol_info = subj.patterns{1,3}.header.vol{1,1}{1,1}
                     
-                    vol_info.fname = [S.group_mvpa_dir '/' S.saveName '_3vox_radius_searchlight.img'];%critical - otherwise you will overwrite your beta!
+                    vol_info.fname = [S.group_mvpa_dir '/' S.saveName '_3vox_radius_searchlight' num2str(n) '.img'];%critical - otherwise you will overwrite your beta!
                     
                     sl_map = zeros(vol_info.dim);
                     
@@ -610,13 +610,11 @@ for b=(1:length(subj_array))
                     
                 end
                 
-                
-                
-                
-                
+                   
             end
+            clear subj
         end
-        clear subj
+
     end
     
     

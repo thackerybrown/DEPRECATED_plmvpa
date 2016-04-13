@@ -258,13 +258,39 @@ for b=(1:length(subj_array))
             %else
             
             
-            S.srch_radius = 3.2;%4.8; %radius in mm, might make sense to use a multiple of voxel dim
+            S.srch_radius = 3;%4.8; %radius in voxels
             vxrad = num2str(S.srch_radius/1.6);
             % create spheres to use for classification. given some radius,
             % produce a matrix of nvox_in_mask x nvox_in_sphere where row i
             % contains the voxels in the sphere centered at voxel i
+            
+            shells = 1;
+            if shells == 1
             subj.adj_sphere = create_adj_list(subj,S.classifier_mask,'radius',S.srch_radius);
             statmap_srch_arg.adj_list = subj.adj_sphere;
+            
+            newrad = (str2num(vxrad)-1)*1.6;
+            subj.adj_sphere = create_adj_list(subj,S.classifier_mask,'radius',newrad);
+            tmp_adjlist = subj.adj_sphere;
+            
+            %start loop over voxels
+            y = statmap_srch_arg.adj_list;
+            for i = 1:length(y)
+            x = tmp_adjlist(i,tmp_adjlist(i,:)>0);
+            A = ismember( statmap_srch_arg.adj_list(i,:), x ) ;
+            y(i,A)=0;
+            
+            end
+            %end loop over voxels
+            statmap_srch_arg.adj_list = y;
+            
+            subj.adj_sphere = create_adj_list(subj,S.classifier_mask,'radius',S.srch_radius);
+
+            else
+                
+            subj.adj_sphere = create_adj_list(subj,S.classifier_mask,'radius',S.srch_radius);
+            statmap_srch_arg.adj_list = subj.adj_sphere;
+            end
             
             %compile params for searchlight
             scratch.class_args = S.class_args;
@@ -367,7 +393,8 @@ for b=(1:length(subj_array))
             
             
             included_voxels = find(subj.masks{1,3}.mat);
-            sl_map(included_voxels) = subj.patterns{1,4}.mat% sloppy hardcode, change to flexibly find correct pattern in future
+            tmpat = get_object(subj, 'pattern', 'vox_pref');
+            sl_map(included_voxels) = tmpat.mat; %subj.patterns{1,4}.mat% sloppy hardcode, change to flexibly find correct pattern in future
             
             spm_write_vol(vol_info, sl_map);
             
